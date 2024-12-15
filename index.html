@@ -1,71 +1,224 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Проект "Комменты"</title>
-    <meta charset="utf-8" />
-    <link rel="stylesheet" href="styles.css" />
-  </head>
+<head>
+ <title>Проект "Комменты"</title>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
 
-  <body>
-    <div class="container">
-      <ul class="comments">
-        <li class="comment">
-          <div class="comment-header">
-            <div>Глеб Фокин</div>
-            <div>12.02.22 12:18</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Это будет первый комментарий на этой странице
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">3</span>
-              <button class="like-button"></button>
-            </div>
-          </div>
-        </li>
-        <li class="comment">
-          <div class="comment-header">
-            <div>Варвара Н.</div>
-            <div>13.02.22 19:22</div>
-          </div>
-          <div class="comment-body">
-            <div class="comment-text">
-              Мне нравится как оформлена эта страница! ❤
-            </div>
-          </div>
-          <div class="comment-footer">
-            <div class="likes">
-              <span class="likes-counter">75</span>
-              <button class="like-button -active-like"></button>
-            </div>
-          </div>
-        </li>
-      </ul>
-      <div class="add-form">
-        <input
-          type="text"
-          class="add-form-name"
-          placeholder="Введите ваше имя"
-        />
-        <textarea
-          type="textarea"
-          class="add-form-text"
-          placeholder="Введите ваш коментарий"
-          rows="4"
-        ></textarea>
-        <div class="add-form-row">
-          <button class="add-form-button">Написать</button>
+<body>
+  <div class="container">
+    <ul data-js-comment-container class="comments">
+      <!-- <li class="comment">
+        <div class="comment-header">
+          <div>Глеб Фокин</div>
+          <div>12.02.22 12:18</div>
         </div>
+        <div data-js-text-area class="comment-body">
+          <div class="comment-text">
+            Это будет первый комментарий на этой странице
+          </div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span data-js-like-counter class="likes-counter">3</span>
+            <button data-js-like-button data-js-button-index="0" class="like-button"></button>
+          </div>
+        </div>
+      </li>
+
+      <li class="comment">
+        <div class="comment-header">
+          <div>Варвара Н.</div>
+          <div>13.02.22 19:22</div>
+        </div>
+        <div class="comment-body">
+          <div data-js-text-area class="comment-text">
+            Мне нравится как оформлена эта страница! ❤
+          </div>
+        </div>
+        <div class="comment-footer">
+          <div class="likes">
+            <span data-js-like-counter class="likes-counter">75</span>
+            <button data-js-like-button data-js-button-index="0" class="like-button -active-like"></button>
+          </div>
+        </div>
+      </li> -->
+    </ul>
+
+    <div class="add-form">
+      <input
+        data-js-name-input
+        type="text"
+        class="add-form-name"
+        placeholder="Введите ваше имя"
+      />
+
+      <textarea
+        data-js-comment-input
+        type="textarea"
+        class="add-form-text"
+        placeholder="Введите ваш коментарий"
+        rows="4"
+      ></textarea>
+
+      <div class="add-form-row">
+        <button data-js-add-button class="add-form-button">Написать</button>
       </div>
     </div>
-  </body>
+  </div>
+</body>
 
-  <script>
-    "use strict";
-    // Код писать здесь
-    console.log("It works!");
-  </script>
+<script>
+
+const commentInput = document.querySelector('[data-js-comment-input]');
+const nameInput = document.querySelector('[data-js-name-input]');
+const addCommentButton = document.querySelector('[data-js-add-button]');
+
+const commentContainer = document.querySelector('[data-js-comment-container]');
+const commentText = document.querySelector('[data-js-text-area]');
+const commentLikeCounter = document.querySelector('[data-js-like-counter]');
+
+const commentsArray = [
+  {
+    commentHeader: {
+      himself: 'Варвара Н.',
+      commentDateAndTime: '13.02.22 19:22',
+    },
+
+    commentBody: {
+      commentText: 'Мне нравится как оформлена эта страница! ❤',
+    },
+
+    commentFooter: {
+      likes: {
+        likesCounter: 75,
+        likeButton: true,
+      },
+    },
+  },
+
+  {
+    commentHeader: {
+      himself: 'Глеб Фокин',
+      commentDateAndTime: '12.02.22 12:18',
+    },
+
+    commentBody: {
+      commentText: 'Это будет первый комментарий на этой странице',
+    },
+
+    commentFooter: {
+      likes: {
+        likesCounter: 8,
+        likeButton: false,
+      },
+    },
+  },
+];
+
+function renderCommentEl(itemEl, indexEL) {
+  return `<li class="comment" data-js-comment-el-index="${indexEL}">
+    <div class="comment-header">
+      <div>${itemEl.commentHeader.himself}</div>
+      <div>${itemEl.commentHeader.commentDateAndTime}</div>
+    </div>
+    <div class="comment-body">
+      <div data-js-text-area class="comment-text">${itemEl.commentBody.commentText}</div>
+    </div>
+    <div class="comment-footer">
+      <div class="likes">
+        <span data-js-like-counter
+        class="likes-counter">${itemEl.commentFooter.likes.likesCounter}</span>
+        
+        <button data-js-like-button data-js-button-index="${indexEL}"
+        class="like-button${itemEl.commentFooter.likes.likeButton 
+        ? " -active-like" 
+        : ""}"></button>
+      </div>
+    </div>
+  </li>`;
+};
+
+function canILike() {
+  const commentLikeButtons = document.querySelectorAll('[data-js-like-button]');
+  for (const commentLikeButtonEL of commentLikeButtons) {
+    commentLikeButtonEL.addEventListener("click", () => {
+      const likeIndex = commentLikeButtonEL.dataset.jsButtonIndex;
+
+      if (commentsArray[likeIndex].commentFooter.likes.likeButton) {
+        commentsArray[likeIndex].commentFooter.likes.likeButton = false;
+        commentsArray[likeIndex].commentFooter.likes.likesCounter -= 1;
+      } else {
+        commentsArray[likeIndex].commentFooter.likes.likeButton = true;
+        commentsArray[likeIndex].commentFooter.likes.likesCounter += 1;
+      };
+
+      commentRender();
+    });
+  };
+};
+
+function commentRender() {
+  const commentsHtml = commentsArray.map((item, index) => renderCommentEl(item, index)).join("");
+  
+  commentContainer.innerHTML = commentsHtml;
+
+  canILike();
+}
+
+commentRender();
+
+addCommentButton.addEventListener("click", (event) => {
+  commentInput.classList.remove("main__input_empty");
+  nameInput.classList.remove("main__input_empty");
+
+  let newDateObject = new Date();
+  correctedYear = String(newDateObject.getFullYear()).split("").slice(-2).join("");
+
+  const commentDate = `${newDateObject.getDate()}.${newDateObject.getMonth()}.${correctedYear}
+  ${newDateObject.getHours()}:${newDateObject.getMinutes()}`
+
+  if (commentInput.value === "" && nameInput.value === "") {
+      commentInput.classList.add("main__input_empty");
+      nameInput.classList.add("main__input_empty");
+      return;
+  };
+
+  if (commentInput.value === "") {
+      commentInput.classList.add("main__input_empty");
+      return;
+  };
+
+  if (nameInput.value === "") {
+      nameInput.classList.add("main__input_empty");
+      return;
+  };
+
+  const newCommentsArray = {
+    commentHeader: {
+      himself: nameInput.value,
+      commentDateAndTime: commentDate,
+    },
+
+    commentBody: {
+      commentText: commentInput.value,
+    },
+
+    commentFooter: {
+      likes: {
+        likesCounter: 0,
+        likeButton: false,
+      },
+    },
+  };
+  
+  commentsArray.push(newCommentsArray);
+  commentInput.value = "";
+  nameInput.value = "";
+  
+  commentRender();
+});
+
+</script>
 </html>
