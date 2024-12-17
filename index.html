@@ -9,12 +9,12 @@
 <body>
   <div class="container">
     <ul data-js-comment-container class="comments">
-      <!-- <li class="comment">
+      <!-- <li class="comment" data-js-comment-el-index="0">
         <div class="comment-header">
           <div>Глеб Фокин</div>
           <div>12.02.22 12:18</div>
         </div>
-        <div data-js-text-area class="comment-body">
+        <div data-js-text-area data-js-area-index="0" class="comment-body">
           <div class="comment-text">
             Это будет первый комментарий на этой странице
           </div>
@@ -22,25 +22,25 @@
         <div class="comment-footer">
           <div class="likes">
             <span data-js-like-counter class="likes-counter">3</span>
-            <button data-js-like-button data-js-button-index="0" class="like-button"></button>
+            <button class="like-button" data-js-like-button data-js-button-index="0"></button>
           </div>
         </div>
       </li>
 
-      <li class="comment">
+      <li class="comment" data-js-comment-el-index="1">
         <div class="comment-header">
           <div>Варвара Н.</div>
           <div>13.02.22 19:22</div>
         </div>
         <div class="comment-body">
-          <div data-js-text-area class="comment-text">
+          <div data-js-text-area data-js-area-index="1" class="comment-text">
             Мне нравится как оформлена эта страница! ❤
           </div>
         </div>
         <div class="comment-footer">
           <div class="likes">
             <span data-js-like-counter class="likes-counter">75</span>
-            <button data-js-like-button data-js-button-index="0" class="like-button -active-like"></button>
+            <button class="like-button -active-like" data-js-like-button data-js-button-index="1"></button>
           </div>
         </div>
       </li> -->
@@ -124,13 +124,13 @@ function renderCommentEl(itemEl, indexEL) {
       <div>${itemEl.commentHeader.commentDateAndTime}</div>
     </div>
     <div class="comment-body">
-      <div data-js-text-area class="comment-text">${itemEl.commentBody.commentText}</div>
+      <div data-js-text-area data-js-area-index="${indexEL}"
+      class="comment-text">${itemEl.commentBody.commentText}</div>
     </div>
     <div class="comment-footer">
       <div class="likes">
         <span data-js-like-counter
         class="likes-counter">${itemEl.commentFooter.likes.likesCounter}</span>
-        
         <button data-js-like-button data-js-button-index="${indexEL}"
         class="like-button${itemEl.commentFooter.likes.likeButton 
         ? " -active-like" 
@@ -159,13 +159,30 @@ function canILike() {
   };
 };
 
+function copyTextAndNameComment() {
+  const textsOfComments = document.querySelectorAll(['[data-js-text-area'])
+  for (const textCommentEl of textsOfComments) {
+    textCommentEl.addEventListener("click", () => {
+      const textAreaIndex = textCommentEl.dataset.jsAreaIndex;
+
+      commentInput.textContent = `---> ${commentsArray[textAreaIndex].commentBody.commentText}`;
+      nameInput.setAttribute("value", `from: ${commentsArray[textAreaIndex].commentHeader.himself}`);
+      commentInput.value = `---> ${commentsArray[textAreaIndex].commentBody.commentText}`;
+      nameInput.value = `from: ${commentsArray[textAreaIndex].commentHeader.himself}`;
+      
+      commentRender();
+    });
+  };
+};
+
 function commentRender() {
   const commentsHtml = commentsArray.map((item, index) => renderCommentEl(item, index)).join("");
   
   commentContainer.innerHTML = commentsHtml;
 
   canILike();
-}
+  copyTextAndNameComment();
+};
 
 commentRender();
 
@@ -197,12 +214,14 @@ addCommentButton.addEventListener("click", (event) => {
 
   const newCommentsArray = {
     commentHeader: {
-      himself: nameInput.value,
+      himself: nameInput.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+      .replaceAll("/", "&#47;").replaceAll("\\", "&#92;"),
       commentDateAndTime: commentDate,
     },
 
     commentBody: {
-      commentText: commentInput.value,
+      commentText: commentInput.value.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+      .replaceAll("/", "&#47;").replaceAll("\\", "&#92;"),
     },
 
     commentFooter: {
@@ -214,8 +233,30 @@ addCommentButton.addEventListener("click", (event) => {
   };
   
   commentsArray.push(newCommentsArray);
+
   commentInput.value = "";
   nameInput.value = "";
+  // Если использовать код в двух строках выше, то изменение формы будет происходить только
+  // на изначально отображённых элементах, а после нажатия кнопки "Написать", изменение формы
+  // происходить не будет вообще для всех элементов списка ul.
+
+  // commentInput.textContent = "";
+  // nameInput.setAttribute("value", "");
+  // Если использовать код в двух строках выше, то изменение формы будет происходить на всех элементах, 
+  // в том числе добавленных после нажатия кнопки "Написать", до того момента, пока пользователь не 
+  // введёт что-либо в форму: поля больше не будут отчищаться и останутся заполненными (или в том 
+  // состоянии, в котором их оставил пользователь). Перемещение содержимого по клику на комментарий в поля 
+  // ввода также перестанет работать вне зависимости от того, что в полях ввода оставит пользователь.
+
+  // Для того, чтобы всё как будто бы заработало необходимо было добавить изменение значений value в 
+  // функцию copyTextAndNameComment() + к тому, что уже и так было там и динамически меняло содержание
+  // страницы: commentInput.textContent
+  //           nameInput.setAttribute,
+  //           а тут оставить отчищение значений value этих переменных: 
+  //           commentInput.value = "";
+  //           nameInput.value = "";
+
+  // Хз почему всё происходит именно так, но рабочий вариант был найден методом перебора предположений
   
   commentRender();
 });
