@@ -1,7 +1,6 @@
 export const nameInput = document.querySelector('[data-js-name-input]')
 export const commentInput = document.querySelector('[data-js-comment-input]')
 export const addCommentButton = document.querySelector('[data-js-add-button]')
-
 export const commentContainer = document.querySelector(
     '[data-js-comment-container]',
 )
@@ -10,8 +9,16 @@ export const commentText = document.querySelector('[data-js-text-area]')
 import { commentsArray } from './modules/commentsInfoArr.js'
 import { commentRender } from './modules/renderCommentsFunctions.js'
 import { correctInput } from './modules/inputProcessingFunctions.js'
+import { delay } from './modules/apiImitation.js'
 
-commentRender()
+const commentsRenderingInfo = document.querySelector(
+    '[data-js-comments-rendering-info]',
+)
+
+delay(1000).then(() => {
+    commentsRenderingInfo.remove()
+    commentRender()
+})
 
 addCommentButton.addEventListener('click', () => {
     commentInput.classList.remove('main__input_empty')
@@ -61,10 +68,23 @@ addCommentButton.addEventListener('click', () => {
         },
     }
 
-    commentsArray.push(newCommentsArray)
+    const addingCommentinformation = document.querySelector(
+        '[data-js-comment-adding-info]',
+    )
 
-    commentInput.value = ''
-    nameInput.value = ''
+    const formContainer = document.querySelector('[data-js-add-form-container]')
 
-    commentRender()
+    addingCommentinformation.style.display = 'block'
+    formContainer.style.visibility = 'hidden'
+
+    delay(1000).then(() => {
+        commentsArray.push(newCommentsArray)
+
+        commentInput.value = ''
+        nameInput.value = ''
+        addingCommentinformation.style.display = 'none'
+        formContainer.style.visibility = 'visible'
+
+        commentRender()
+    })
 })

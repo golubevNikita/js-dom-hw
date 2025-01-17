@@ -1,6 +1,7 @@
 import { commentsArray } from './commentsInfoArr.js'
 import { commentContainer } from '../index.js'
 import { copyTextAndNameComment } from './inputProcessingFunctions.js'
+import { delay } from './apiImitation.js'
 
 function renderCommentEl(itemEl, indexEL) {
     return `<li class="comment" data-js-comment-el-index="${indexEL}">
@@ -31,16 +32,33 @@ function canILike() {
     for (const commentLikeButtonEL of commentLikeButtons) {
         commentLikeButtonEL.addEventListener('click', () => {
             const likeIndex = commentLikeButtonEL.dataset.jsButtonIndex
+            const pushedButton = document.querySelector(
+                `[data-js-button-index="${likeIndex}"]`,
+            )
 
             if (commentsArray[likeIndex].commentFooter.likes.likeButton) {
-                commentsArray[likeIndex].commentFooter.likes.likeButton = false
-                commentsArray[likeIndex].commentFooter.likes.likesCounter -= 1
-            } else {
-                commentsArray[likeIndex].commentFooter.likes.likeButton = true
-                commentsArray[likeIndex].commentFooter.likes.likesCounter += 1
-            }
+                pushedButton.classList.add('loading-like')
+                pushedButton.disabled = true
 
-            commentRender()
+                delay(1000).then(() => {
+                    commentsArray[likeIndex].commentFooter.likes.likeButton =
+                        false
+                    commentsArray[likeIndex].commentFooter.likes.likesCounter -=
+                        1
+                    commentRender()
+                })
+            } else {
+                pushedButton.classList.add('loading-like')
+                pushedButton.disabled = true
+
+                delay(1000).then(() => {
+                    commentsArray[likeIndex].commentFooter.likes.likeButton =
+                        true
+                    commentsArray[likeIndex].commentFooter.likes.likesCounter +=
+                        1
+                    commentRender()
+                })
+            }
         })
     }
 }
