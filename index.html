@@ -8,6 +8,9 @@
 
     <body>
         <div class="container">
+            <div data-js-comments-rendering-info>
+                Пожалуйста подождите, загружаю комментарии...
+            </div>
             <ul data-js-comment-container class="comments">
                 <!-- <li class="comment" data-js-comment-el-index="0">
         <div class="comment-header">
@@ -46,7 +49,14 @@
       </li> -->
             </ul>
 
-            <div class="add-form">
+            <div
+                data-js-comment-adding-info
+                style="display: none; padding-top: 20px"
+            >
+                Комментарий добавляется...
+            </div>
+
+            <div data-js-add-form-container class="add-form">
                 <input
                     data-js-name-input
                     type="text"
@@ -80,6 +90,7 @@
             type="module"
             src="./modules/inputProcessingFunctions.js"
         ></script>
+        <script type="module" src="./modules/apiImitation.js"></script>
     </body>
 
     <script>
