@@ -2,8 +2,8 @@ import { commentsArray, newContentOfArray } from './commentsInfoArr.js'
 import { commentRender } from './renderCommentsFunctions.js'
 import { apiRequest } from './apiImitation.js'
 
-export const commentInput = document.querySelector('[data-js-comment-input]')
 export const nameInput = document.querySelector('[data-js-name-input]')
+export const commentInput = document.querySelector('[data-js-comment-input]')
 
 export function copyTextAndNameComment() {
     const textsOfComments = document.querySelectorAll(['[data-js-text-area'])
@@ -32,11 +32,20 @@ addCommentButton.addEventListener('click', () => {
     commentInput.classList.remove('main__input_empty')
     nameInput.classList.remove('main__input_empty')
 
-    if (commentInput.value.length <= 3 || nameInput.value.length <= 3) {
+    const name = correctInput(nameInput)
+    const text = correctInput(commentInput)
+
+    if (name === '' && text === '') {
         commentInput.classList.add('main__input_empty')
         nameInput.classList.add('main__input_empty')
-        alert('Имя или текст короче 3 символов')
-        return
+    }
+
+    if (name === '') {
+        nameInput.classList.add('main__input_empty')
+    }
+
+    if (text === '') {
+        commentInput.classList.add('main__input_empty')
     }
 
     const addingCommentinformation = document.querySelector(
@@ -47,28 +56,76 @@ addCommentButton.addEventListener('click', () => {
     addingCommentinformation.style.display = 'block'
     formContainer.style.visibility = 'hidden'
 
-    const addedСomment = {
-        text: correctInput(commentInput),
-        name: correctInput(nameInput),
+    // const addedСomment = {
+    //     text: text,
+    //     name: name,
+    // }
+
+    async function getmainPromise() {
+        const mainPromise = await fetch(
+            'https://wedev-api.sky.pro/api/v1/golubev-nikita/comments',
+            {
+                method: 'POST',
+                body: JSON.stringify({
+                    text,
+                    name,
+                    forceError: true,
+                }),
+            },
+        )
+
+        return mainPromise
     }
 
-    fetch('https://wedev-api.sky.pro/api/v1/golubev-nikita/comments', {
-        method: 'POST',
-        body: JSON.stringify(addedСomment),
-    })
-        .then(() =>
-            apiRequest(
-                'https://wedev-api.sky.pro/api/v1/golubev-nikita/comments',
-            ),
-        )
-        .then((response) => {
-            newContentOfArray(response)
+    async function getCorrectStatus() {
+        try {
+            let resultOfRequest = await getmainPromise()
 
-            commentInput.value = ''
-            nameInput.value = ''
+            while (resultOfRequest.status === 500) {
+                resultOfRequest = await getmainPromise()
+            }
+
+            try {
+                if (resultOfRequest.status === 400) {
+                    throw new Error(
+                        'имя автора / текст комментария короче 3 символов или вообще не написаны',
+                    )
+                }
+            } catch (error) {
+                const textOfError = new String(error)
+                textOfError.includes('TypeError: Failed to fetch')
+                    ? alert(`Ошибка: проверьте интернет соединение`)
+                    : alert(`Ошибка: ${error.message}`)
+
+                nameInput.innerHTML = name
+                commentInput.innerHTML = text
+
+                addingCommentinformation.style.display = 'none'
+                formContainer.style.visibility = 'visible'
+            }
+
+            if (resultOfRequest.ok) {
+                apiRequest().then((response) => {
+                    newContentOfArray(response.comments)
+
+                    commentInput.value = ''
+                    nameInput.value = ''
+                    addingCommentinformation.style.display = 'none'
+                    formContainer.style.visibility = 'visible'
+
+                    commentRender()
+                })
+            }
+        } catch (error) {
+            const textOfError = new String(error)
+            textOfError.includes('TypeError: Failed to fetch')
+                ? alert(`Ошибка: проверьте интернет соединение`)
+                : alert(`Ошибка: ${error.message}`)
+
             addingCommentinformation.style.display = 'none'
             formContainer.style.visibility = 'visible'
+        }
+    }
 
-            commentRender()
-        })
+    getCorrectStatus()
 })
