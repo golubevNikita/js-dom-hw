@@ -6,10 +6,8 @@ const commentsRenderingInfo = document.querySelector(
     '[data-js-comments-rendering-info]',
 )
 
-apiRequest('https://wedev-api.sky.pro/api/v1/golubev-nikita/comments').then(
-    (response) => {
-        commentsRenderingInfo.remove()
-        newContentOfArray(response)
-        commentRender()
-    },
-)
+apiRequest().then((response) => {
+    commentsRenderingInfo.remove()
+    newContentOfArray(response.comments)
+    commentRender()
+})

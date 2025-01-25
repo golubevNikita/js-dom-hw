@@ -1,12 +1,11 @@
-export function apiRequest(url) {
-    return fetch(url)
+export function apiRequest() {
+    return fetch('https://wedev-api.sky.pro/api/v1/golubev-nikita/comments')
         .then((response) => {
             return response.json()
         })
         .then((data) => {
-            return data.comments
+            return data
         })
-        .catch((error) => console.log('Ошибка:', error.json()))
 }
 
 export function delay(interval = 1000) {
