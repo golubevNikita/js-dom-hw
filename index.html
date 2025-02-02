@@ -11,43 +11,8 @@
             <div data-js-comments-rendering-info>
                 Пожалуйста подождите, загружаю комментарии...
             </div>
-            <ul data-js-comment-container class="comments">
-                <!-- <li class="comment" data-js-comment-el-index="0">
-        <div class="comment-header">
-          <div>Глеб Фокин</div>
-          <div>12.02.22 12:18</div>
-        </div>
-        <div data-js-text-area data-js-area-index="0" class="comment-body">
-          <div class="comment-text">
-            Это будет первый комментарий на этой странице
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span data-js-like-counter class="likes-counter">3</span>
-            <button class="like-button" data-js-like-button data-js-button-index="0"></button>
-          </div>
-        </div>
-      </li>
 
-      <li class="comment" data-js-comment-el-index="1">
-        <div class="comment-header">
-          <div>Варвара Н.</div>
-          <div>13.02.22 19:22</div>
-        </div>
-        <div class="comment-body">
-          <div data-js-text-area data-js-area-index="1" class="comment-text">
-            Мне нравится как оформлена эта страница! ❤
-          </div>
-        </div>
-        <div class="comment-footer">
-          <div class="likes">
-            <span data-js-like-counter class="likes-counter">75</span>
-            <button class="like-button -active-like" data-js-like-button data-js-button-index="1"></button>
-          </div>
-        </div>
-      </li> -->
-            </ul>
+            <ul data-js-comment-container class="comments"></ul>
 
             <div
                 data-js-comment-adding-info
@@ -56,25 +21,63 @@
                 Комментарий добавляется...
             </div>
 
-            <div data-js-add-form-container class="add-form">
-                <input
-                    data-js-name-input
-                    type="text"
-                    class="add-form-name"
-                    placeholder="Введите ваше имя"
-                />
+            <div
+                data-js-auth-process-info
+                style="display: none; padding-top: 20px"
+            >
+                Авторизация...
+            </div>
 
-                <textarea
-                    data-js-comment-input
-                    type="textarea"
-                    class="add-form-text"
-                    placeholder="Введите ваш коментарий"
-                    rows="4"
-                ></textarea>
+            <div data-js-add-form-container class="add-form"></div>
 
-                <div class="add-form-row">
-                    <button data-js-add-button class="add-form-button">
-                        Написать
+            <div
+                data-js-registration-process-info
+                style="display: none; padding-top: 40px"
+            >
+                Регистрация...
+            </div>
+
+            <div
+                data-js-registration-form
+                style="display: none"
+                class="add-form"
+            >
+                <div>
+                    <h3 style="margin-top: 0px">
+                        Чтобы зарегистрироваться, введите:
+                    </h3>
+                    <p>Ваш логин</p>
+                    <input
+                        data-js-registration-new-login
+                        type="text"
+                        class="add-form-name"
+                        placeholder="Логин"
+                    />
+                    <p>Имя</p>
+                    <input
+                        data-js-registration-new-name
+                        type="text"
+                        class="add-form-name"
+                        placeholder="Имя"
+                    />
+                    <p>Пароль</p>
+                    <input
+                        data-js-registration-new-password
+                        type="text"
+                        class="add-form-name"
+                        placeholder="Пароль"
+                    />
+                </div>
+                <div>
+                    <button
+                        data-js-registration-confirm
+                        style="margin-right: 16px"
+                        class="add-form-button"
+                    >
+                        Зарегистрироваться
+                    </button>
+                    <button data-js-registration-cancel class="add-form-button">
+                        Отмена
                     </button>
                 </div>
             </div>
@@ -91,6 +94,11 @@
             src="./modules/inputProcessingFunctions.js"
         ></script>
         <script type="module" src="./modules/apiImitation.js"></script>
+        <script type="module" src="./modules/renderContent.js"></script>
+        <script
+            type="module"
+            src="./modules/renderRegistrationForm.js"
+        ></script>
     </body>
 
     <script>

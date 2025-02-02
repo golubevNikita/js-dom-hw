@@ -1,6 +1,6 @@
 import { commentsArray } from './commentsInfoArr.js'
+import { getListOfComments, getInfoAboutLike } from './apiMainFunctions.js'
 import { copyTextAndNameComment } from './inputProcessingFunctions.js'
-import { delay } from './apiImitation.js'
 
 export function correctedData(dataString = new Date()) {
     const newDateObject = new Date(dataString)
@@ -28,7 +28,7 @@ export function renderCommentEl(itemEl, indexEL) {
       <div class="likes">
         <span class="likes-counter">${itemEl.likes}</span>
         <button data-js-like-button data-js-button-index="${indexEL}"
-        class="like-button${itemEl.isLiked ? ' -active-like' : ''}"></button>
+        class="like-button${itemEl.isLiked ? ' active-like' : ''}"></button>
       </div>
     </div>
   </li>`
@@ -44,12 +44,9 @@ export function commentRender() {
         .join('')
 
     commentContainer.innerHTML = commentsHtml
-
-    canILike()
-    copyTextAndNameComment()
 }
 
-function canILike() {
+export function canILike() {
     const commentLikeButtons = document.querySelectorAll(
         '[data-js-like-button]',
     )
@@ -57,29 +54,36 @@ function canILike() {
     for (const commentLikeButtonEL of commentLikeButtons) {
         commentLikeButtonEL.addEventListener('click', () => {
             const likeIndex = commentLikeButtonEL.dataset.jsButtonIndex
+            const searchedComment = commentsArray[likeIndex].id
+
             const pushedButton = document.querySelector(
                 `[data-js-button-index="${likeIndex}"]`,
             )
 
-            if (commentsArray[likeIndex].isLiked) {
-                pushedButton.classList.add('loading-like')
-                pushedButton.disabled = true
+            pushedButton.disabled = true
+            pushedButton.classList.add('loading-like')
 
-                delay(1000).then(() => {
-                    commentsArray[likeIndex].isLiked = false
-                    commentsArray[likeIndex].likes -= 1
-                    commentRender()
-                })
-            } else {
-                pushedButton.classList.add('loading-like')
-                pushedButton.disabled = true
+            async function changeLikeInfo() {
+                const likeInfoResponse = await getInfoAboutLike(
+                    searchedComment,
+                ).then((data) => data)
 
-                delay(1000).then(() => {
-                    commentsArray[likeIndex].isLiked = true
-                    commentsArray[likeIndex].likes += 1
+                getListOfComments().then((response) => {
+                    commentsArray[likeIndex].isLiked =
+                        likeInfoResponse.result.isLiked
+
+                    commentsArray[likeIndex].likes = response.comments.find(
+                        (commentsEl) => commentsEl.id === searchedComment,
+                    ).likes
+
                     commentRender()
+
+                    canILike()
+                    copyTextAndNameComment()
                 })
             }
+
+            changeLikeInfo()
         })
     }
 }
