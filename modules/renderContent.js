@@ -1,12 +1,10 @@
-import { commentRender, canILike } from './renderCommentsFunctions.js'
 import { getListOfComments, getBearerToken } from './apiMainFunctions.js'
-import { newContentOfArray } from './commentsInfoArr.js'
-// import { commentsArray } from './commentsInfoArr.js'
+import { commentAuthRender } from './renderCommentsFunctions.js'
+import { correctInput, emptyCheck } from './inputProcessingFunctions.js'
 import {
-    copyTextAndNameComment,
-    correctInput,
-    emptyCheck,
-} from './inputProcessingFunctions.js'
+    // commentsArray,
+    newContentOfArray,
+} from './commentsInfoArr.js'
 
 export const formContainer = document.querySelector(
     '[data-js-add-form-container]',
@@ -90,9 +88,8 @@ export function renderAuthorisationForm() {
                     loginInput.value = ''
                     passwordInput.value = ''
 
+                    commentAuthRender()
                     renderCommentForm()
-                    canILike()
-                    copyTextAndNameComment()
 
                     formContainer.style.visibility = 'visible'
                 }
@@ -111,11 +108,11 @@ export function renderAuthorisationForm() {
     })
 }
 
-/* <input data-js-name-input type="text" class="add-form-name" 
-placeholder="Введите ваше имя"/> */
-
 export function renderCommentForm() {
-    formContainer.innerHTML = `<textarea data-js-comment-input
+    formContainer.innerHTML = `<input data-js-name-input type="text"
+        class="add-form-name" value="${JSON.parse(localStorage.getItem('localUser')).login}" 
+        placeholder="Введите ваше имя"/>
+    <textarea data-js-comment-input
         type="textarea" class="add-form-text" 
         placeholder="Введите ваш коментарий" rows="4"></textarea>
     <div style="display: flex; justify-content: space-between">
@@ -132,14 +129,14 @@ export function renderCommentForm() {
     </div>`
 
     const addCommentButton = document.querySelector('[data-js-add-button]')
-    // const nameAutorInput = document.querySelector('[data-js-name-input]')
+    const nameAutorInput = document.querySelector('[data-js-name-input]')
     const commentTextInput = document.querySelector('[data-js-comment-input]')
 
     addCommentButton.addEventListener('click', () => {
         // console.log(commentsArray)
 
         // fetch(
-        //     'https://wedev-api.sky.pro/api/v2/nikita-golubev/comments/679eba9581d0aaceedae4531',
+        //     'https://wedev-api.sky.pro/api/v2/nikita-golubev/comments/67a4ffbc780abccd4b6bffb6',
         //     {
         //         method: 'DELETE',
         //         headers: {
@@ -148,7 +145,10 @@ export function renderCommentForm() {
         //     },
         // )
 
-        // nameAutorInput.classList.remove('main__input_empty')
+        nameAutorInput.value = JSON.parse(
+            localStorage.getItem('localUser'),
+        ).login
+
         commentTextInput.classList.remove('main__input_empty')
 
         if (commentTextInput.value === '') {
@@ -184,9 +184,7 @@ export function renderCommentForm() {
                 let resultOfRequest = await getmainPromise()
 
                 if (resultOfRequest.status === 400) {
-                    throw new Error(
-                        'имя автора / текст комментария короче 3 символов или вообще не написаны',
-                    )
+                    throw new Error('текст комментария короче 3 символов')
                 }
 
                 if (resultOfRequest.ok) {
@@ -194,13 +192,10 @@ export function renderCommentForm() {
                         newContentOfArray(response.comments)
 
                         commentTextInput.value = ''
-                        // nameAutorInput.value = ''
                         addingCommentinformation.style.display = 'none'
                         formContainer.style.visibility = 'visible'
 
-                        commentRender()
-                        canILike()
-                        copyTextAndNameComment()
+                        commentAuthRender()
                     })
                 }
             } catch (error) {

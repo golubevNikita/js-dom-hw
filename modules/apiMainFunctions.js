@@ -1,4 +1,8 @@
-import { authToken, getAndUpdateToken } from './renderContent.js'
+import { getAndUpdateToken } from './renderContent.js'
+
+export const commentsRenderingInfo = document.querySelector(
+    '[data-js-comments-rendering-info]',
+)
 
 export function getListOfComments() {
     return fetch('https://wedev-api.sky.pro/api/v2/nikita-golubev/comments')
@@ -25,7 +29,12 @@ export async function getBearerToken(login, password) {
     return mainPromise
 }
 
-export async function getInfoAboutLike(searchedComment) {
+export async function getInfoAboutLike(
+    searchedComment,
+    authToken = JSON.parse(localStorage.getItem('localUser')).token.split(
+        ' ',
+    )[1],
+) {
     const mainLikeInfo = await fetch(
         `https://wedev-api.sky.pro/api/v2/nikita-golubev/comments/${searchedComment}/toggle-like`,
         {

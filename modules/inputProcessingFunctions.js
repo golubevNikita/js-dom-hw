@@ -1,15 +1,13 @@
 import { commentsArray } from './commentsInfoArr.js'
 
 export function copyTextAndNameComment() {
-    // const nameInput = document.querySelector('[data-js-name-input]')
     const commentInput = document.querySelector('[data-js-comment-input]')
     const textsOfComments = document.querySelectorAll(['[data-js-text-area'])
     for (const textCommentEl of textsOfComments) {
         textCommentEl.addEventListener('click', () => {
             const textAreaIndex = textCommentEl.dataset.jsAreaIndex
 
-            commentInput.value = `---> ${commentsArray[textAreaIndex].text}`
-            // nameInput.value = `from: ${commentsArray[textAreaIndex].author.name}`
+            commentInput.value = `from: ${commentsArray[textAreaIndex].author.name}\n---> ${commentsArray[textAreaIndex].text}`
         })
     }
 }

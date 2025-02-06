@@ -1,21 +1,26 @@
-import { commentRender, canILike } from './modules/renderCommentsFunctions.js'
 import { newContentOfArray } from './modules/commentsInfoArr.js'
-import { getListOfComments, isAlreadyAuth } from './modules/apiMainFunctions.js'
-import { renderRegistrationForm } from './modules/renderRegistrationForm.js'
-import { copyTextAndNameComment } from './modules/inputProcessingFunctions.js'
+import { regButtonRender } from './modules/renderRegistrationForm.js'
+
+import {
+    commentsRenderingInfo,
+    getListOfComments,
+    isAlreadyAuth,
+} from './modules/apiMainFunctions.js'
+
 import {
     renderAuthorisationForm,
     renderCommentForm,
 } from './modules/renderContent.js'
 
-const commentsRenderingInfo = document.querySelector(
-    '[data-js-comments-rendering-info]',
-)
+import {
+    commentRender,
+    commentAuthRender,
+} from './modules/renderCommentsFunctions.js'
 
 getListOfComments().then((response) => {
-    commentsRenderingInfo.remove()
     newContentOfArray(response.comments)
     commentRender()
+    commentsRenderingInfo.style.display = 'none'
 
     try {
         isAlreadyAuth(
@@ -23,16 +28,17 @@ getListOfComments().then((response) => {
             JSON.parse(localStorage.getItem('localUser')).password,
         )
 
+        commentAuthRender()
         renderCommentForm()
-        canILike()
-        copyTextAndNameComment()
     } catch (error) {
         const textOfError = new String(error)
         textOfError.includes('TypeError: Failed to fetch')
             ? console.log(`Ошибка: проверьте интернет соединение`)
-            : console.log(`Ошибка: ${error.message}`)
+            : console.log(
+                  `Ошибка просто справочно сообщает о том, что пользователь не зарегистрирован: ${error.message}`,
+              )
 
         renderAuthorisationForm()
-        renderRegistrationForm()
+        regButtonRender()
     }
 })

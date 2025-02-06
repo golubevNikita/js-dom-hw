@@ -8,6 +8,12 @@
 
     <body>
         <div class="container">
+            <div
+                data-js-registration-form
+                style="display: none"
+                class="add-form"
+            ></div>
+
             <div data-js-comments-rendering-info>
                 Пожалуйста подождите, загружаю комментарии...
             </div>
@@ -36,294 +42,28 @@
             >
                 Регистрация...
             </div>
-
-            <div
-                data-js-registration-form
-                style="display: none"
-                class="add-form"
-            >
-                <div>
-                    <h3 style="margin-top: 0px">
-                        Чтобы зарегистрироваться, введите:
-                    </h3>
-                    <p>Ваш логин</p>
-                    <input
-                        data-js-registration-new-login
-                        type="text"
-                        class="add-form-name"
-                        placeholder="Логин"
-                    />
-                    <p>Имя</p>
-                    <input
-                        data-js-registration-new-name
-                        type="text"
-                        class="add-form-name"
-                        placeholder="Имя"
-                    />
-                    <p>Пароль</p>
-                    <input
-                        data-js-registration-new-password
-                        type="text"
-                        class="add-form-name"
-                        placeholder="Пароль"
-                    />
-                </div>
-                <div>
-                    <button
-                        data-js-registration-confirm
-                        style="margin-right: 16px"
-                        class="add-form-button"
-                    >
-                        Зарегистрироваться
-                    </button>
-                    <button data-js-registration-cancel class="add-form-button">
-                        Отмена
-                    </button>
-                </div>
-            </div>
         </div>
 
         <script type="module" src="./index.js"></script>
         <script type="module" src="./modules/commentsInfoArr.js"></script>
+
         <script
             type="module"
             src="./modules/renderCommentsFunctions.js"
         ></script>
+
         <script
             type="module"
             src="./modules/inputProcessingFunctions.js"
         ></script>
-        <script type="module" src="./modules/apiImitation.js"></script>
+
+        <script type="module" src="./modules/apiMainFunctions.js"></script>
+
         <script type="module" src="./modules/renderContent.js"></script>
+
         <script
             type="module"
             src="./modules/renderRegistrationForm.js"
         ></script>
     </body>
-
-    <script>
-        // const commentInput = document.querySelector('[data-js-comment-input]')
-        // const nameInput = document.querySelector('[data-js-name-input]')
-        // const addCommentButton = document.querySelector('[data-js-add-button]')
-
-        // const commentContainer = document.querySelector(
-        //     '[data-js-comment-container]',
-        // )
-        // const commentText = document.querySelector('[data-js-text-area]')
-        // const commentLikeCounter = document.querySelector(
-        //     '[data-js-like-counter]',
-        // )
-
-        // const commentsArray = [
-        //     {
-        //         commentHeader: {
-        //             himself: 'Варвара Н.',
-        //             commentDateAndTime: '13.02.22 19:22',
-        //         },
-
-        //         commentBody: {
-        //             commentText: 'Мне нравится как оформлена эта страница! ❤',
-        //         },
-
-        //         commentFooter: {
-        //             likes: {
-        //                 likesCounter: 75,
-        //                 likeButton: true,
-        //             },
-        //         },
-        //     },
-
-        //     {
-        //         commentHeader: {
-        //             himself: 'Глеб Фокин',
-        //             commentDateAndTime: '12.02.22 12:18',
-        //         },
-
-        //         commentBody: {
-        //             commentText:
-        //                 'Это будет первый комментарий на этой странице',
-        //         },
-
-        //         commentFooter: {
-        //             likes: {
-        //                 likesCounter: 8,
-        //                 likeButton: false,
-        //             },
-        //         },
-        //     },
-        // ]
-
-        // function renderCommentEl(itemEl, indexEL) {
-        //     return `<li class="comment" data-js-comment-el-index="${indexEL}">
-        //     <div class="comment-header">
-        //       <div>${itemEl.commentHeader.himself}</div>
-        //       <div>${itemEl.commentHeader.commentDateAndTime}</div>
-        //     </div>
-        //     <div class="comment-body">
-        //       <div data-js-text-area data-js-area-index="${indexEL}"
-        //       class="comment-text">${itemEl.commentBody.commentText}</div>
-        //     </div>
-        //     <div class="comment-footer">
-        //       <div class="likes">
-        //         <span data-js-like-counter
-        //         class="likes-counter">${itemEl.commentFooter.likes.likesCounter}</span>
-        //         <button data-js-like-button data-js-button-index="${indexEL}"
-        //         class="like-button${
-        //             itemEl.commentFooter.likes.likeButton ? ' -active-like' : ''
-        //         }"></button>
-        //       </div>
-        //     </div>
-        //   </li>`
-        // }
-
-        // function canILike() {
-        //     const commentLikeButtons = document.querySelectorAll(
-        //         '[data-js-like-button]',
-        //     )
-        //     for (const commentLikeButtonEL of commentLikeButtons) {
-        //         commentLikeButtonEL.addEventListener('click', () => {
-        //             const likeIndex = commentLikeButtonEL.dataset.jsButtonIndex
-
-        //             if (
-        //                 commentsArray[likeIndex].commentFooter.likes.likeButton
-        //             ) {
-        //                 commentsArray[
-        //                     likeIndex
-        //                 ].commentFooter.likes.likeButton = false
-        //                 commentsArray[
-        //                     likeIndex
-        //                 ].commentFooter.likes.likesCounter -= 1
-        //             } else {
-        //                 commentsArray[
-        //                     likeIndex
-        //                 ].commentFooter.likes.likeButton = true
-        //                 commentsArray[
-        //                     likeIndex
-        //                 ].commentFooter.likes.likesCounter += 1
-        //             }
-
-        //             commentRender()
-        //         })
-        //     }
-        // }
-
-        // function copyTextAndNameComment() {
-        //     const textsOfComments = document.querySelectorAll([
-        //         '[data-js-text-area',
-        //     ])
-        //     for (const textCommentEl of textsOfComments) {
-        //         textCommentEl.addEventListener('click', () => {
-        //             const textAreaIndex = textCommentEl.dataset.jsAreaIndex
-
-        //             commentInput.textContent = `---> ${commentsArray[textAreaIndex].commentBody.commentText}`
-        //             nameInput.setAttribute(
-        //                 'value',
-        //                 `from: ${commentsArray[textAreaIndex].commentHeader.himself}`,
-        //             )
-        //             commentInput.value = `---> ${commentsArray[textAreaIndex].commentBody.commentText}`
-        //             nameInput.value = `from: ${commentsArray[textAreaIndex].commentHeader.himself}`
-
-        //             commentRender()
-        //         })
-        //     }
-        // }
-
-        // function commentRender() {
-        //     const commentsHtml = commentsArray
-        //         .map((item, index) => renderCommentEl(item, index))
-        //         .join('')
-
-        //     commentContainer.innerHTML = commentsHtml
-
-        //     canILike()
-        //     copyTextAndNameComment()
-        // }
-
-        // commentRender()
-
-        // addCommentButton.addEventListener('click', (event) => {
-        //     commentInput.classList.remove('main__input_empty')
-        //     nameInput.classList.remove('main__input_empty')
-
-        //     let newDateObject = new Date()
-        //     correctedYear = String(newDateObject.getFullYear())
-        //         .split('')
-        //         .slice(-2)
-        //         .join('')
-
-        //     const commentDate = `${newDateObject.getDate()}.${newDateObject.getMonth() + 1}.${correctedYear}
-        //       ${newDateObject.getHours()}:${newDateObject.getMinutes()}`
-
-        //     if (commentInput.value === '' && nameInput.value === '') {
-        //         commentInput.classList.add('main__input_empty')
-        //         nameInput.classList.add('main__input_empty')
-        //         return
-        //     }
-
-        //     if (commentInput.value === '') {
-        //         commentInput.classList.add('main__input_empty')
-
-        //         return
-        //     }
-
-        //     if (nameInput.value === '') {
-        //         nameInput.classList.add('main__input_empty')
-        //         return
-        //     }
-
-        //     const newCommentsArray = {
-        //         commentHeader: {
-        //             himself: nameInput.value
-        //                 .replaceAll('<', '&lt;')
-        //                 .replaceAll('>', '&gt;')
-        //                 .replaceAll('/', '&#47;')
-        //                 .replaceAll('\\', '&#92;'),
-        //             commentDateAndTime: commentDate,
-        //         },
-
-        //         commentBody: {
-        //             commentText: commentInput.value
-        //                 .replaceAll('<', '&lt;')
-        //                 .replaceAll('>', '&gt;')
-        //                 .replaceAll('/', '&#47;')
-        //                 .replaceAll('\\', '&#92;'),
-        //         },
-
-        //         commentFooter: {
-        //             likes: {
-        //                 likesCounter: 0,
-        //                 likeButton: false,
-        //             },
-        //         },
-        //     }
-
-        //     commentsArray.push(newCommentsArray)
-
-        //     commentInput.value = ''
-        //     nameInput.value = ''
-        //     // Если использовать код в двух строках выше, то изменение формы будет происходить только
-        //     // на изначально отображённых элементах, а после нажатия кнопки "Написать", изменение формы
-        //     // происходить не будет вообще для всех элементов списка ul.
-
-        //     // commentInput.textContent = "";
-        //     // nameInput.setAttribute("value", "");
-        //     // Если использовать код в двух строках выше, то изменение формы будет происходить на всех элементах,
-        //     // в том числе добавленных после нажатия кнопки "Написать", до того момента, пока пользователь не
-        //     // введёт что-либо в форму: поля больше не будут отчищаться и останутся заполненными (или в том
-        //     // состоянии, в котором их оставил пользователь). Перемещение содержимого по клику на комментарий в поля
-        //     // ввода также перестанет работать вне зависимости от того, что в полях ввода оставит пользователь.
-
-        //     // Для того, чтобы всё как будто бы заработало необходимо было добавить изменение значений value в
-        //     // функцию copyTextAndNameComment() + к тому, что уже и так было там и динамически меняло содержание
-        //     // страницы: commentInput.textContent
-        //     //           nameInput.setAttribute,
-        //     //           а тут оставить отчищение значений value этих переменных:
-        //     //           commentInput.value = "";
-        //     //           nameInput.value = "";
-
-        //     // Хз почему всё происходит именно так, но рабочий вариант был найден перебором предположений
-
-        //     commentRender()
-        // })
-    </script>
 </html>
